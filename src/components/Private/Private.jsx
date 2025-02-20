@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Navigate, replace, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../Provider/AuthProvider';
 
 const Private = ({children}) => {
@@ -13,12 +13,10 @@ const Private = ({children}) => {
     }
 
     if(user){
-        setLoading(false)
         return children
     }
 
-    return <Navigate to='/auth' 
-    // state={{from: location}} replace
+    return <Navigate to='/auth' state={{from: location.pathname}} replace
     />
 };
 
