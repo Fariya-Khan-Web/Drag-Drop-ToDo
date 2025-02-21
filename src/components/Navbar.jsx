@@ -59,7 +59,7 @@ const Navbar = () => {
                         </div>
                         <div
                             tabIndex={0}
-                            className="card card-compact dropdown-content bg-[#322d29]/20 z-[1] mt-4 w-52 rounded-md">
+                            className="card card-compact dropdown-content bg-[#cecac8] shadow-lg z-[1] mt-4 w-52 rounded-md">
                             <div className="card-body">
                                 <span className="text-lg font-bold">8 Items</span>
                                 <span className="text-info">Subtotal: $999</span>
@@ -77,7 +77,7 @@ const Navbar = () => {
                         </div>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content  rounded-md z-[1] mt-3 w-52 p-2 bg-[#322d29]/20">
+                            className="menu menu-sm dropdown-content  rounded-md z-[1] mt-3 w-52 p-2 bg-[#cecac8] shadow-lg">
                             <li><a className="justify-between">{user.displayName}</a></li>
                             <li><a>Settings</a></li>
                             <li><a onClick={handleLogout}>Logout</a></li>
