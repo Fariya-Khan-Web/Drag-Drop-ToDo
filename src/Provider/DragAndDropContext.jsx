@@ -3,8 +3,9 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 import { arrayMove } from "@dnd-kit/sortable";
 import { useQuery } from '@tanstack/react-query';
 import { AuthContext } from './AuthProvider';
-import { defaultCols, defaultTasks} from '../data/data';
+import { defaultCols, defaultTasks } from '../data/data';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 export const DragAndDrop = createContext();
@@ -16,7 +17,6 @@ const DragAndDropContext = ({ children }) => {
 
     const [columns, setColumns] = useState(defaultCols);
     const [tasks, setTasks] = useState([]);
-    // const [tasks, setTasks] = useState(defaultTasks);
     const [activeColumn, setActiveColumn] = useState(null);
     const [activeTask, setActiveTask] = useState(null);
 
@@ -75,11 +75,11 @@ const DragAndDropContext = ({ children }) => {
         const { active, over } = event;
         if (!over) return;
 
-        
+
         const activeId = active.id;
         const overId = over.id;
 
-        
+
         if (activeId === overId) return;
 
         const isActiveAColumn = active.data.current?.type === "Column";
@@ -140,9 +140,48 @@ const DragAndDropContext = ({ children }) => {
         }
     }
 
-    const deleteTask = (id) => {
-        const newTasks = tasks.filter((task) => task._id !== id);
-        setTasks(newTasks);
+    const deleteTask = async (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#72383D",
+            cancelButtonColor: "#cecac8",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                console.log('want to delete')
+
+
+                try {
+                    const res = await axios.delete(`http://localhost:3000/tasks/${id}`);
+                    if(res.data.acknowledged){
+                    
+                        const newTasks = tasks.filter((task) => task._id !== id);
+                        setTasks(newTasks);
+                    
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Your task has been deleted.",
+                            icon: "success"
+                    
+                        });
+                    }
+                }
+                catch (error) {
+                    console.error("Error deleting task:", error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to delete the task.",
+                        icon: "error"
+                    });
+                }
+
+            }
+        });
+
+
     }
 
     const updateTask = (id, content) => {

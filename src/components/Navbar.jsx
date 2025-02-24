@@ -55,7 +55,7 @@ const Navbar = () => {
                         </div>
                         <ul
                             tabIndex={0}
-                            className="menu menu-sm dropdown-content  rounded-md z-[1] mt-3 w-52 p-2 bg-[#cecac8] dark:bg-[#363230] shadow-lg">
+                            className="menu menu-sm dropdown-content font-semibold rounded-md z-[1] mt-3 w-52 p-2 bg-[#cecac8] dark:bg-[#363230] shadow-lg">
                             <li><a className="text-center px-14">{user.displayName}</a></li>
                             <li><a>Settings</a></li>
                             <li><a onClick={handleLogout}>Logout</a></li>

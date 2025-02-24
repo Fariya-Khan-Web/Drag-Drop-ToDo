@@ -5,6 +5,7 @@ import DragAndDrop from "./DragAndDrop";
 import { useDragAndDropContext } from "../../Provider/DragAndDropContext";
 import { MdOutlineDelete } from "react-icons/md";
 import { RiEdit2Line } from "react-icons/ri";
+import Swal from "sweetalert2";
 
 const Task = ({ task }) => {
     const { deleteTask, updateTask } = useDragAndDropContext()
@@ -73,7 +74,9 @@ const Task = ({ task }) => {
                 <div className="flex justify-end">
 
                     <button
-                        onClick={() => deleteTask(task._id)}
+                        onClick={() => {
+                            updateTask(task._id)
+                        }}
                         className="stroke-white bg-columnBg p-2 rounded opacity-60 hover:opacity-100"
                     >
                         <RiEdit2Line className="text-xl text-[#72383D]" />

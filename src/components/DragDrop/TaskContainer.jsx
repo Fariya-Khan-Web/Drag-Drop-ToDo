@@ -3,6 +3,7 @@ import Task from './Task';
 import { SortableContext } from '@dnd-kit/sortable';
 import DragAndDrop from './DragAndDrop';
 import { useDragAndDropContext } from '../../Provider/DragAndDropContext';
+import AddTaskBtn from './AddTaskBtn';
 
 const TaskContainer = ({columnId}) => {
     const { tasks, tasksIds } = useDragAndDropContext();
@@ -16,6 +17,8 @@ const TaskContainer = ({columnId}) => {
                     colTask?.map(task => <Task key={task._id} task={task} />)
                 }
             </SortableContext>
+            
+
         </div>
     )
 };
