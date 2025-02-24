@@ -10,7 +10,7 @@ const ColumnContainer = () => {
 
     return (
         <div>
-            <div className='flex gap-4'>
+            <div className='grid md:grid-cols-3 gap-4 w-[94%] mx-auto max-w-screen-xl'>
                 {
                     columns.map((col) => (
                         <Column key={col.id} column={col} />

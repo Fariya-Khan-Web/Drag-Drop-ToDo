@@ -19,32 +19,7 @@ const DragAndDropContext = ({ children }) => {
     const [activeColumn, setActiveColumn] = useState(null);
     const [activeTask, setActiveTask] = useState(null);
 
-    const createNewCol = () => {
-        const addNewCol = {
-            id: crypto.randomUUID(),
-            title: `Column ${columns.length + 1}`,
-        };
 
-        setColumns([...columns, addNewCol]);
-    }
-
-    const deleteColumn = (id) => {
-        console.log(id);
-        const filteredColumns = columns.filter((col) => col.id !== id);
-        setColumns(filteredColumns);
-
-        const newTasks = tasks.filter((t) => t.columnId !== id);
-        setTasks(newTasks);
-    }
-
-    const updateColumn = (id, title) => {
-        const newColumns = columns.map((col) => {
-            if (col.id !== id) return col;
-            return { ...col, title };
-        });
-
-        setColumns(newColumns);
-    }
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -162,9 +137,6 @@ const DragAndDropContext = ({ children }) => {
     }
 
     const DomTreeInfo = {
-        createNewCol,
-        deleteColumn,
-        updateColumn,
         columns,
         columnsId,
         handleDragStart,
