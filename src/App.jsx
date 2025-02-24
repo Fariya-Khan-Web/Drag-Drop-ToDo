@@ -8,12 +8,6 @@ import DragAndDrop from './components/DragDrop/DragAndDrop';
 
 function App() {
 
-  const { user, tasks, fetchTasks, showModal, setShowModal } = useContext(AuthContext)
-
-
-  // Define sections
-  const sections = ['ToDo', 'InProgress', 'Done'];
-
 
   return (
     <div className='bg-[#efe9e1] dark:bg-[#14120f] text-[#322d29] dark:text-[#d6d1cd]'>

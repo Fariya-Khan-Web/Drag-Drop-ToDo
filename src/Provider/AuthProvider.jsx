@@ -12,10 +12,7 @@ const AuthProvider = ({ children }) => {
     const [dark, setDark] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [loading, setLoading] = useState(true)
-    // const [tasks, setTasks] = useState({ todo: [], inprogress: [], done: [] });
-    const [tasks, setTasks] = useState({ todo: [], inprogress: [], done: [] });
 
-    
 
     const auth = getAuth(app)
 
@@ -30,30 +27,6 @@ const AuthProvider = ({ children }) => {
         setLoading(true)
         return signOut(auth)
     }
-
-
-    // context fetchTask data get 
-    const fetchTasks = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3000/tasks/${user?.email}`);
-            const taskData = response.data;
-
-            const categorizedTasks = { todo: [], inprogress: [], done: [] };
-
-            response.data.forEach((task) => {
-                if (categorizedTasks[task.category]) {
-                    categorizedTasks[task.category].push(task);
-                } else {
-                    console.warn("Unexpected category:", task.category, "for task:", task);
-                }
-            });
-
-            setTasks(categorizedTasks);
-        } catch (error) {
-            console.error("Error fetching tasks:", error);
-            toast.error("Failed to load tasks!");
-        }
-    };
 
 
     useEffect(() => {
@@ -76,9 +49,6 @@ const AuthProvider = ({ children }) => {
         setLoading,
         googleSignIn,
         logOut,
-        fetchTasks,
-        tasks,
-        setTasks,
         showModal, 
         setShowModal
     }

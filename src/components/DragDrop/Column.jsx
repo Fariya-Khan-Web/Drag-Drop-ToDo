@@ -8,7 +8,6 @@ import AddTaskBtn from './AddTaskBtn';
 
 const Column = ({ column }) => {
 
-
     const {
         setNodeRef,
         attributes,
@@ -17,7 +16,7 @@ const Column = ({ column }) => {
         listeners,
         transform,
     } = useSortable({
-        id: column.id,
+        id: column._id,
         data: {
             type: "Column",
             column,
@@ -57,9 +56,9 @@ const Column = ({ column }) => {
                 attributes={attributes}
             />
 
-            <TaskContainer columnId={column.id} />
+            <TaskContainer columnId={column._id} />
 
-            <AddTaskBtn columnId={column.id} />
+            <AddTaskBtn columnId={column._id} />
         </div>
     );
 };

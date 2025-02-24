@@ -17,6 +17,7 @@ const Login = () => {
             .then((result) => {
                 
                 setUser(result.user)
+                console.log(result)
 
                 const Toast = Swal.mixin({
                     toast: true,
@@ -36,13 +37,11 @@ const Login = () => {
 
 
                 const userData = {
+                    id: result.user.uid,
                     displayName: result.user.displayName,
                     email: result.user.email,
                     photoURL: result.user.photoURL
                 }
-                console.log(result)
-                console.log(result.user)
-                console.log(userData)
 
                 fetch('http://localhost:3000/users', {
                     method: 'POST',

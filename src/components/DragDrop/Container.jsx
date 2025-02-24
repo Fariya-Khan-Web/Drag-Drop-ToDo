@@ -8,8 +8,6 @@ import { useDragAndDropContext } from '../../Provider/DragAndDropContext';
 const Container = () => {
 
     const { columns, columnsId, sensors, handleDragStart, handleDragEnd, handleDragOver } = useDragAndDropContext();
-    console.log(columnsId)
-    console.log(columns)
 
     return (
         <div className=''>

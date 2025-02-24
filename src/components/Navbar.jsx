@@ -7,7 +7,6 @@ const Navbar = () => {
 
     const handleTheme = () => {
         setDark(!dark)
-        console.log(dark)
         document.body.classList.toggle("dark");
     }
 
@@ -29,7 +28,6 @@ const Navbar = () => {
                     icon: "success",
                     title: "Logged out successfully"
                 });
-                console.log(res)
                 setLoading(false)
             })
             .catch(err => {

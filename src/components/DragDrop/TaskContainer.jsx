@@ -13,7 +13,7 @@ const TaskContainer = ({columnId}) => {
         <div className="flex flex-grow flex-col gap-4 p-3 overflow-x-hidden overflow-y-auto ">
             <SortableContext items={tasksIds}>
                 {
-                    colTask?.map(task => <Task key={task.id} task={task} />)
+                    colTask?.map(task => <Task key={task._id} task={task} />)
                 }
             </SortableContext>
         </div>

@@ -18,7 +18,7 @@ const Task = ({ task }) => {
         listeners,
         transform,
     } = useSortable({
-        id: task.id,
+        id: task._id,
         data: {
             type: "Task",
             task,
@@ -73,13 +73,13 @@ const Task = ({ task }) => {
                 <div className="flex justify-end">
 
                     <button
-                        onClick={() => deleteTask(task.id)}
+                        onClick={() => deleteTask(task._id)}
                         className="stroke-white bg-columnBg p-2 rounded opacity-60 hover:opacity-100"
                     >
                         <RiEdit2Line className="text-xl text-[#72383D]" />
                     </button>
                     <button
-                        onClick={() => deleteTask(task.id)}
+                        onClick={() => deleteTask(task._id)}
                         className="stroke-white bg-columnBg p-2 rounded opacity-60 hover:opacity-100"
                     >
                         <MdOutlineDelete className="text-2xl text-[#72383D]" />
