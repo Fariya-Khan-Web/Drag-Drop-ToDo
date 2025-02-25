@@ -1,4 +1,4 @@
-import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { arrayMove } from "@dnd-kit/sortable";
 import { useQuery } from '@tanstack/react-query';
@@ -6,55 +6,56 @@ import { AuthContext } from './AuthProvider';
 import { defaultCols, defaultTasks } from '../data/data';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 
 export const DragAndDrop = createContext();
 
 const DragAndDropContext = ({ children }) => {
 
-    const { user, loading } = useContext(AuthContext)
-    const email = user?.email;
+    const { user, loading, tasks, setTasks, fetchTasks } = useContext(AuthContext)
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     const [columns, setColumns] = useState(defaultCols);
-    const [tasks, setTasks] = useState([]);
     const [activeColumn, setActiveColumn] = useState(null);
     const [activeTask, setActiveTask] = useState(null);
+
+    const [showModal, setShowModal] = useState(false)
+    const [addTaskModal, setAddTaskModal] = useState(false)
+    const [editTask, setEditTask] = useState()
 
 
     const columnsId = columns.map((col) => col._id);
     const tasksIds = tasks.map((task) => task._id);
 
 
-
     useEffect(() => {
-        fetch(`http://localhost:3000/tasks/${email}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data)
-                setTasks(data)
-            })
-    }, [email])
+        if (user?.email) {
+            fetchTasks();
+        }
+    }, [user, editTask]);
 
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
-                distance: 10,
+                delay: 70,
+                tolerance: 30,
+               
+            },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 0, // Adjust delay for touch
+                tolerance: 50,
+               
             },
         })
     );
 
-    function createTask(columnId) {
-        const newTask = {
-            id: crypto.randomUUID(),
-            columnId,
-            content: `Task ${tasks.length + 1}`,
-        };
-
-        setTasks([...tasks, newTask]);
-    }
-
     const handleDragStart = (event) => {
+ 
         const { current } = event.active.data;
 
         if (current?.type === "Column") {
@@ -117,8 +118,10 @@ const DragAndDropContext = ({ children }) => {
                 const overIndex = tasks.findIndex((t) => t._id === overId);
 
                 if (tasks[activeIndex].columnId !== tasks[overIndex].columnId) {
-                    // Fix introduced after video recording
-                    tasks[activeIndex].columnId = tasks[overIndex].columnId;
+
+                    const updatedTask = { ...tasks[activeIndex], columnId: tasks[overIndex].columnId };
+                    // Update the task in MongoDB
+                    updateTaskColumnId(updatedTask);
                     return arrayMove(tasks, activeIndex, overIndex - 1);
                 }
 
@@ -133,12 +136,35 @@ const DragAndDropContext = ({ children }) => {
             setTasks((tasks) => {
                 const activeIndex = tasks.findIndex((t) => t._id === activeId);
 
-                tasks[activeIndex].columnId = overId;
-                console.log("DROPPING TASK OVER COLUMN", { activeIndex });
+                const updatedTask = { ...tasks[activeIndex], columnId: overId };
+
+                // Update the task in MongoDB
+                updateTaskColumnId(updatedTask);
                 return arrayMove(tasks, activeIndex, activeIndex);
             });
         }
     }
+
+    const updateTaskColumnId = async (task) => {
+        try {
+            const response = await axios.put(`http://localhost:3000/task/${task._id}`, {
+                contentTitle: task.contentTitle,
+                content: task.content,
+                columnId: task.columnId
+            });
+
+            if (response.data.modifiedCount > 0) {
+                fetchTasks()
+                console.log("Task column updated successfully!");
+            } else {
+                console.warn("No changes were made to the task.");
+            }
+
+        } catch (error) {
+            console.error("Error updating task column:", error);
+        }
+    };
+
 
     const deleteTask = async (id) => {
         Swal.fire({
@@ -156,16 +182,17 @@ const DragAndDropContext = ({ children }) => {
 
                 try {
                     const res = await axios.delete(`http://localhost:3000/tasks/${id}`);
-                    if(res.data.acknowledged){
-                    
+                    if (res.data.acknowledged) {
+
                         const newTasks = tasks.filter((task) => task._id !== id);
                         setTasks(newTasks);
-                    
+                        fetchTasks();
+
                         Swal.fire({
                             title: "Deleted!",
                             text: "Your task has been deleted.",
                             icon: "success"
-                    
+
                         });
                     }
                 }
@@ -184,12 +211,64 @@ const DragAndDropContext = ({ children }) => {
 
     }
 
-    const updateTask = (id, content) => {
-        const newTasks = tasks.map((task) =>
-            task._id === id ? { ...task, content } : task
-        );
+    const updateTaskModal = (task) => {
+        setEditTask(task)
+        setShowModal(true)
+    }
 
-        setTasks(newTasks);
+    const onSubmit = async (data) => {
+
+        if (editTask) {
+            // Update task (PUT request)
+            try {
+                const response = await axios.put(`http://localhost:3000/task/${editTask._id}`, {
+                    contentTitle: data.contentTitle,
+                    content: data.content,
+                    columnId: data.columnId,
+                    // timestamp: new Date().toISOString(),
+                    // userEmail: user?.email,
+                });
+
+                fetchTasks()
+                toast.success("Task updated successfully!");
+                setShowModal(false);
+                setEditTask(null);
+
+            } catch (error) {
+                console.error("Error updating task:", error);
+                toast.error("Failed to update task. Please try again.");
+            }
+
+        }
+    };
+
+    const Submit = async (data) => {
+
+        const newtask = {
+            contentTitle: data.contentTitle,
+            content: data.content,
+            columnId: data.columnId,
+            timestamp: new Date(),
+            due_date: data.due_date,
+            user_email: user?.email,
+        }
+
+        try {
+            const res = await axios.post(`http://localhost:3000/tasks`, newtask);
+            console.log(res)
+            fetchTasks()
+            toast.success("Task added successfully!");
+            setAddTaskModal(false);
+            fetchTasks()
+
+
+        } catch (error) {
+            console.error("Error updating task:", error);
+            toast.error("Failed to add task. Please try again.");
+        }
+
+        setAddTaskModal(false)
+        console.log('submit')
     }
 
     const DomTreeInfo = {
@@ -204,9 +283,10 @@ const DragAndDropContext = ({ children }) => {
         tasks,
         tasksIds,
         setTasks,
-        createTask,
         deleteTask,
-        updateTask,
+        updateTaskModal,
+        addTaskModal,
+        setAddTaskModal
     }
 
     if (loading) {
@@ -216,6 +296,154 @@ const DragAndDropContext = ({ children }) => {
     return (
         <DragAndDrop.Provider value={DomTreeInfo}>
             {children}
+            {
+                showModal && (
+                    <div className="modal modal-open">
+                        <div className="modal-box dark:bg-[#322d29]">
+                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+                                {/* Task Title */}
+                                <div>
+                                    <label className="block text-gray-700 font-medium">Task Title <span className="text-red-500">*</span></label>
+                                    <input
+                                        defaultValue={editTask?.contentTitle}
+                                        type="text"
+                                        {...register("contentTitle", {
+                                            required: "Title is required",
+                                            maxLength: { value: 40, message: "Title cannot exceed 50 characters" }
+                                        })}
+                                        className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none"
+                                        placeholder="Enter task title"
+                                    />
+                                    {errors.contentTitle && <p className="text-red-500 text-sm mt-1">{errors.contentTitle.message}</p>}
+                                </div>
+
+                                {/* Description */}
+                                <div>
+                                    <label className="block text-gray-700 font-medium">Description <span className="text-red-500">*</span></label>
+                                    <textarea
+                                        defaultValue={editTask?.content}
+                                        {...register("content", {
+                                            required: "Description is required",
+                                            maxLength: { value: 150, message: "Description cannot exceed 200 characters" }
+                                        })}
+                                        className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none h-24 resize-none"
+                                        placeholder="Enter task details"
+                                    ></textarea>
+                                    {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
+                                </div>
+
+                                {/* Category */}
+                                <div>
+                                    <label className="block text-gray-700 font-medium">Category  <span className="text-red-500">*</span></label>
+                                    <select
+                                        defaultValue={editTask?.columnId}
+                                        {...register("columnId", { required: true })}
+                                        className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none"
+                                    >
+                                        <option value="" disabled>Category select</option>
+                                        <option value="todo">To-Do</option>
+                                        <option value="doing">In Progress</option>
+                                        <option value="done">Done</option>
+                                    </select>
+                                </div>
+                                <div className="modal-action mt-2">
+                                    <button className="btn bg-[#72383D] btn-sm border-none px-6 py-2 text-white">Save</button>
+                                    <button
+                                        onClick={() => {
+                                            setShowModal(false)
+                                            setEditTask(null)
+                                            console.log(editTask)
+                                        }}
+                                        className="btn btn-sm px-6 py-2 border-none dark:bg-[#72383D]/30 text-white bg-[#c4bebb]">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )
+            }
+
+            {
+                addTaskModal && (
+                    <div className="modal modal-open dark:bg-[#322d29]">
+                        <div className="modal-box dark:bg-[#322d29]">
+                            <form onSubmit={handleSubmit(Submit)} className="space-y-2">
+                                {/* Task Title */}
+                                <div>
+                                    <label className="block text-gray-700 font-medium">Task Title <span className="text-red-500">*</span></label>
+                                    <input
+
+                                        type="text"
+                                        {...register("contentTitle", {
+                                            required: "Title is required",
+                                            maxLength: { value: 40, message: "Title cannot exceed 50 characters" }
+                                        })}
+                                        className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none"
+                                        placeholder="Enter task title"
+                                    />
+                                    {errors.contentTitle && <p className="text-red-500 text-sm mt-1">{errors.contentTitle.message}</p>}
+                                </div>
+
+                                {/* Description */}
+                                <div>
+                                    <label className="block text-gray-700 font-medium">Description <span className="text-red-500">*</span></label>
+                                    <textarea
+
+                                        {...register("content", {
+                                            required: "Description is required",
+                                            maxLength: { value: 150, message: "Description cannot exceed 200 characters" }
+                                        })}
+                                        className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none h-24 resize-none"
+                                        placeholder="Enter task details"
+                                    ></textarea>
+                                    {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
+                                </div>
+
+                                {/* Category */}
+                                <div className='grid gap-2 md:grid-cols-2'>
+
+                                    <div>
+                                        <label className="block text-gray-700 font-medium">Category  <span className="text-red-500">*</span></label>
+                                        <select
+
+                                            {...register("columnId", { required: true })}
+                                            className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none"
+                                        >
+                                            <option value="" disabled>Category select</option>
+                                            <option value="todo">To-Do</option>
+                                            <option value="doing">In Progress</option>
+                                            <option value="done">Done</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-gray-700 font-medium">Category  <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="date"
+                                            className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none"
+                                            {...register("due_date", {
+                                                required: "Date is required"
+                                            })} />
+
+
+                                    </div>
+
+                                </div>
+
+                                <div className="modal-action mt-2">
+                                    <button className="btn bg-[#72383D] border-none btn-sm px-6 py-2 text-white">Save</button>
+                                    <button
+                                        onClick={() => {
+
+                                            setAddTaskModal(false)
+
+                                        }}
+                                        className="btn btn-sm px-6 py-2 border-none text-white bg-[#c4bebb]">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )
+            }
         </DragAndDrop.Provider>
     );
 };

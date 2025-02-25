@@ -3,6 +3,7 @@ import app from '../firebase/firebase.init';
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useDragAndDropContext } from './DragAndDropContext';
 
 export const AuthContext = createContext()
 
@@ -10,7 +11,7 @@ const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState()
     const [dark, setDark] = useState(false)
-    const [showModal, setShowModal] = useState(false)
+    const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true)
 
 
@@ -29,6 +30,28 @@ const AuthProvider = ({ children }) => {
     }
 
 
+    const fetchTasks = async () => {
+        if (!user) {
+            return <div className='flex justify-center items-center h-screen'>
+                <span className="loading loading-dots loading-lg"></span>
+            </div>
+        } else {
+            try {
+                console.log(user.email)
+                const response = await axios.get(`http://localhost:3000/tasks/${user?.email}`);
+                const taskData = response.data;
+
+                console.log(taskData)
+
+                setTasks(taskData);
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+                toast.error("Failed to load tasks!");
+            }
+        }
+    };
+
+
     useEffect(() => {
 
         const unsubscribe = onAuthStateChanged(auth, currentUser => {
@@ -36,7 +59,10 @@ const AuthProvider = ({ children }) => {
             setLoading(false)
         })
 
-        return () => unsubscribe()
+        return () => {
+            fetchTasks()
+            unsubscribe()
+        }
     }, [])
 
 
@@ -49,8 +75,9 @@ const AuthProvider = ({ children }) => {
         setLoading,
         googleSignIn,
         logOut,
-        showModal, 
-        setShowModal
+        fetchTasks,
+        tasks,
+        setTasks,
     }
 
 

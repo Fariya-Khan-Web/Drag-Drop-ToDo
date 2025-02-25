@@ -47,7 +47,7 @@ const Column = ({ column }) => {
             ref={setNodeRef}
             // w-full break-inside-avoid mb-4
             // w-[350px]
-            className="bg-[#ddd] dark:bg-[#1d1b1b] break-inside-avoid my-2 h-[calc(40vh)] md:h-[calc(80vh)] rounded-md flex flex-col bg-columnBg"
+            className="bg-[#ddd] dark:bg-[#1d1b1b] break-inside-avoid my-2 h-[calc(50vh)] md:h-[calc(80vh)] rounded-md flex flex-col bg-columnBg"
         >
 
             <ColumnTitle

@@ -8,7 +8,7 @@ import { RiEdit2Line } from "react-icons/ri";
 import Swal from "sweetalert2";
 
 const Task = ({ task }) => {
-    const { deleteTask, updateTask } = useDragAndDropContext()
+    const { deleteTask, updateTaskModal} = useDragAndDropContext()
 
 
     const {
@@ -63,7 +63,8 @@ const Task = ({ task }) => {
             {...listeners}
             {...attributes}
             ref={setNodeRef}
-            className="p-2.5 min-h-[120px] overflow-hidden overflow-y-scroll items-center  text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-[#72383D]/60 cursor-grab relative duration-300 task bg-[#322d29]/10 dark:bg-[#363230]/50"
+            
+            className="touch-none p-2.5 min-h-[120px] overflow-hidden overflow-y-scroll items-center  text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-[#72383D]/60 cursor-grab relative duration-300 task bg-[#322d29]/10 dark:bg-[#363230]/50"
         >
             <div className="flex justify-between">
 
@@ -75,7 +76,7 @@ const Task = ({ task }) => {
 
                     <button
                         onClick={() => {
-                            updateTask(task._id)
+                            updateTaskModal(task)
                         }}
                         className="stroke-white bg-columnBg p-2 rounded opacity-60 hover:opacity-100"
                     >
