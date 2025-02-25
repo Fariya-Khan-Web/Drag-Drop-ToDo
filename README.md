@@ -53,10 +53,12 @@ This project uses the following dependencies:
    cd (repo name)
 
 3.**Install dependencies:**
-npm install
+   ```bash
+   npm install
 
-4. **Start the development server:**
-npm run dev
+4.**Start the development server:**
+   ```bash
+   npm run dev
 
 
 **Acknowledgments**
