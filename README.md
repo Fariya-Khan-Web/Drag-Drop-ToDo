@@ -49,7 +49,8 @@ This project uses the following dependencies:
    git clone https://github.com/Fariya-Khan-Web/Drag-Drop-ToDo.git
 
 2. **Navigate to the project directory:**
-cd (repo name)
+   ```bash
+   cd (repo name)
 
 3.**Install dependencies:**
 npm install
