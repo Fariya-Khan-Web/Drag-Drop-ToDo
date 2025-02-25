@@ -38,7 +38,7 @@ const AuthProvider = ({ children }) => {
         } else {
             try {
                 console.log(user.email)
-                const response = await axios.get(`http://localhost:3000/tasks/${user?.email}`);
+                const response = await axios.get(`https://todo-drag-drop-rho.vercel.app/tasks/${user?.email}`);
                 const taskData = response.data;
 
                 console.log(taskData)

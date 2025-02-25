@@ -43,7 +43,7 @@ const Login = () => {
                     photoURL: result.user.photoURL
                 }
 
-                fetch('http://localhost:3000/users', {
+                fetch('https://todo-drag-drop-rho.vercel.app/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

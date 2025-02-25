@@ -147,7 +147,7 @@ const DragAndDropContext = ({ children }) => {
 
     const updateTaskColumnId = async (task) => {
         try {
-            const response = await axios.put(`http://localhost:3000/tasks/${task._id}`, {
+            const response = await axios.put(`https://todo-drag-drop-rho.vercel.app/tasks/${task._id}`, {
                 contentTitle: task.contentTitle,
                 content: task.content,
                 columnId: task.columnId
@@ -181,7 +181,7 @@ const DragAndDropContext = ({ children }) => {
 
 
                 try {
-                    const res = await axios.delete(`http://localhost:3000/tasks/${id}`);
+                    const res = await axios.delete(`https://todo-drag-drop-rho.vercel.app/tasks/${id}`);
                     if (res.data.acknowledged) {
 
                         const newTasks = tasks.filter((task) => task._id !== id);
@@ -221,7 +221,7 @@ const DragAndDropContext = ({ children }) => {
         if (editTask) {
             // Update task (PUT request)
             try {
-                const response = await axios.put(`http://localhost:3000/tasks/${editTask._id}`, {
+                const response = await axios.put(`https://todo-drag-drop-rho.vercel.app/task/${editTask._id}`, {
                     contentTitle: data.contentTitle,
                     content: data.content,
                     columnId: data.columnId,
@@ -254,7 +254,7 @@ const DragAndDropContext = ({ children }) => {
         }
 
         try {
-            const res = await axios.post(`http://localhost:3000/tasks`, newtask);
+            const res = await axios.post(`https://todo-drag-drop-rho.vercel.app/tasks`, newtask);
             console.log(res)
             fetchTasks()
             toast.success("Task added successfully!");
