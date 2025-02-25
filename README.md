@@ -3,7 +3,7 @@
 
 Welcome to **Listly!** 🎉 A modern, intuitive, and feature-rich task management application designed to help you organize, prioritize, and manage your tasks effortlessly. Whether you're a developer, project manager, or just someone looking to stay organized, **Listly!** has got you covered!
 
----
+
 
 ## 🛠️ Technologies Used
 
@@ -19,7 +19,7 @@ Welcome to **Listly!** 🎉 A modern, intuitive, and feature-rich task managemen
 - **Icons**: Lucide React, React Icons
 - **Build Tool**: Vite
 
----
+
 
 ## 📦 Dependencies
 This project uses the following dependencies:
@@ -33,7 +33,7 @@ This project uses the following dependencies:
 - **React Toastify** - Notifications
 - **MongoDB & Express.js** - Backend (if applicable)
 
----
+
 
 ## 🚀 Getting Started
 
