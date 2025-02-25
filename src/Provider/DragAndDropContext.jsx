@@ -155,13 +155,13 @@ const DragAndDropContext = ({ children }) => {
 
             if (response.data.modifiedCount > 0) {
                 fetchTasks()
-                console.log("Task column updated successfully!");
+                // console.log("Task column updated successfully!");
             } else {
-                console.warn("No changes were made to the task.");
+                // console.warn("No changes were made to the task.");
             }
 
         } catch (error) {
-            console.error("Error updating task column:", error);
+            // console.error("Error updating task column:", error);
         }
     };
 
@@ -177,8 +177,6 @@ const DragAndDropContext = ({ children }) => {
             confirmButtonText: "Yes, delete it!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                console.log('want to delete')
-
 
                 try {
                     const res = await axios.delete(`https://todo-drag-drop-rho.vercel.app/tasks/${id}`);
@@ -197,7 +195,6 @@ const DragAndDropContext = ({ children }) => {
                     }
                 }
                 catch (error) {
-                    console.error("Error deleting task:", error);
                     Swal.fire({
                         title: "Error",
                         text: "Failed to delete the task.",
@@ -235,7 +232,6 @@ const DragAndDropContext = ({ children }) => {
                 setEditTask(null);
 
             } catch (error) {
-                console.error("Error updating task:", error);
                 toast.error("Failed to update task. Please try again.");
             }
 
@@ -255,7 +251,6 @@ const DragAndDropContext = ({ children }) => {
 
         try {
             const res = await axios.post(`https://todo-drag-drop-rho.vercel.app/tasks`, newtask);
-            console.log(res)
             fetchTasks()
             toast.success("Task added successfully!");
             setAddTaskModal(false);
@@ -263,12 +258,10 @@ const DragAndDropContext = ({ children }) => {
 
 
         } catch (error) {
-            console.error("Error updating task:", error);
             toast.error("Failed to add task. Please try again.");
         }
 
         setAddTaskModal(false)
-        console.log('submit')
     }
 
     const DomTreeInfo = {
@@ -352,7 +345,6 @@ const DragAndDropContext = ({ children }) => {
                                         onClick={() => {
                                             setShowModal(false)
                                             setEditTask(null)
-                                            console.log(editTask)
                                         }}
                                         className="btn btn-sm px-6 py-2 border-none dark:bg-[#72383D]/30 text-white bg-[#c4bebb]">Close</button>
                                 </div>

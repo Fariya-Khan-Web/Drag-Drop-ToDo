@@ -17,7 +17,6 @@ const Login = () => {
             .then((result) => {
                 
                 setUser(result.user)
-                console.log(result)
 
                 const Toast = Swal.mixin({
                     toast: true,
@@ -52,11 +51,11 @@ const Login = () => {
                 })
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data)
+                        // console.log(data)
                     })
             })
             .catch(err => {
-                console.log(err)
+                // console.log(err)
             })
     }
 

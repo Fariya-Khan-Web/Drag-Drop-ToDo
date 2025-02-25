@@ -37,15 +37,11 @@ const AuthProvider = ({ children }) => {
             </div>
         } else {
             try {
-                console.log(user.email)
                 const response = await axios.get(`https://todo-drag-drop-rho.vercel.app/tasks/${user?.email}`);
                 const taskData = response.data;
 
-                console.log(taskData)
-
                 setTasks(taskData);
             } catch (error) {
-                console.error("Error fetching tasks:", error);
                 toast.error("Failed to load tasks!");
             }
         }
