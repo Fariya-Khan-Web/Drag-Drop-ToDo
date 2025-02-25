@@ -40,14 +40,14 @@ const DragAndDropContext = ({ children }) => {
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
-                delay: 70,
+                delay: 200,
                 tolerance: 30,
                
             },
         }),
         useSensor(TouchSensor, {
             activationConstraint: {
-                delay: 0, // Adjust delay for touch
+                delay: 40, // Adjust delay for touch
                 tolerance: 50,
                
             },
