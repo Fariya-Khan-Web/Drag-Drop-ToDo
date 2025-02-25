@@ -64,6 +64,6 @@ This project uses the following dependencies:
    ```
 
 
-**Acknowledgments**
+## **Acknowledgments**
 Special thanks to the creators of all the amazing libraries and tools used in this project.
 Shoutout to the open-source community for their endless contributions and support.
