@@ -9,7 +9,7 @@ const ColumnContainer = () => {
 
     return (
         <div>
-            <div className='grid md:grid-cols-3 gap-4 w-[94%] mx-auto max-w-screen-xl'>
+            <div className='grid md:grid-cols-3 gap-4 w-[94%] my-4 mx-auto max-w-screen-xl'>
                 {
                     columns.map((col) => (
                         <Column key={col._id} column={col} />

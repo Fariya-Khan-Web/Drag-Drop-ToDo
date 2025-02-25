@@ -147,7 +147,7 @@ const DragAndDropContext = ({ children }) => {
 
     const updateTaskColumnId = async (task) => {
         try {
-            const response = await axios.put(`http://localhost:3000/task/${task._id}`, {
+            const response = await axios.put(`http://localhost:3000/tasks/${task._id}`, {
                 contentTitle: task.contentTitle,
                 content: task.content,
                 columnId: task.columnId
@@ -221,7 +221,7 @@ const DragAndDropContext = ({ children }) => {
         if (editTask) {
             // Update task (PUT request)
             try {
-                const response = await axios.put(`http://localhost:3000/task/${editTask._id}`, {
+                const response = await axios.put(`http://localhost:3000/tasks/${editTask._id}`, {
                     contentTitle: data.contentTitle,
                     content: data.content,
                     columnId: data.columnId,
@@ -375,7 +375,7 @@ const DragAndDropContext = ({ children }) => {
                                         type="text"
                                         {...register("contentTitle", {
                                             required: "Title is required",
-                                            maxLength: { value: 40, message: "Title cannot exceed 50 characters" }
+                                            maxLength: { value: 50, message: "Title cannot exceed 50 characters" }
                                         })}
                                         className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none"
                                         placeholder="Enter task title"
@@ -390,7 +390,7 @@ const DragAndDropContext = ({ children }) => {
 
                                         {...register("content", {
                                             required: "Description is required",
-                                            maxLength: { value: 150, message: "Description cannot exceed 200 characters" }
+                                            maxLength: { value: 200, message: "Description cannot exceed 200 characters" }
                                         })}
                                         className="w-full mt-1 p-2 border dark:bg-[#322d29] rounded-md focus:ring-2 focus:ring-[#72383D] outline-none h-24 resize-none"
                                         placeholder="Enter task details"

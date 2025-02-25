@@ -1,14 +1,12 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useContext, useState } from "react";
-import DragAndDrop from "./DragAndDrop";
 import { useDragAndDropContext } from "../../Provider/DragAndDropContext";
 import { MdOutlineDelete } from "react-icons/md";
 import { RiEdit2Line } from "react-icons/ri";
-import Swal from "sweetalert2";
+import { format, compareAsc } from "date-fns";
 
 const Task = ({ task }) => {
-    const { deleteTask, updateTaskModal} = useDragAndDropContext()
+    const { deleteTask, updateTaskModal } = useDragAndDropContext()
 
 
     const {
@@ -63,7 +61,7 @@ const Task = ({ task }) => {
             {...listeners}
             {...attributes}
             ref={setNodeRef}
-            
+
             className="touch-none p-2.5 min-h-[120px] overflow-hidden overflow-y-scroll items-center  text-left rounded-xl hover:ring-2 hover:ring-inset hover:ring-[#72383D]/60 cursor-grab relative duration-300 task bg-[#322d29]/10 dark:bg-[#363230]/50"
         >
             <div className="flex justify-between">
@@ -95,6 +93,10 @@ const Task = ({ task }) => {
 
             <p className="my-auto  w-full">
                 {task.content}
+            </p>
+
+            <p className={compareAsc(task.due_date, new Date()) == -1 ? "flex justify-end text-red-700" : " flex justify-end" }>
+                {format(task.due_date, 'P')}
             </p>
 
 
